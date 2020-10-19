@@ -41,13 +41,12 @@ if __name__ == '__main__':
 	paths, w, h = read(f'./SVG/{file}.svg')	#從SVG讀取path
 	
 	if mode=='-p':
-		drawer = pg_draw(w,h)
+		drawer = pg_draw(w,h,scope=1)
 	elif mode=='-t':
-		drawer = tl_draw(w,h)
+		drawer = tl_draw(w,h,scope=1)
 	else:
 		raise OptionError("錯誤的模式選項")
 	
-	print(paths)
 	#開始轉換
 	datas = []
 	print("\nStart convert SVG to path")
@@ -55,7 +54,7 @@ if __name__ == '__main__':
 	for i in range(len(paths)):
 		now = paths[i]
 		print(f'Part({i}/{len(paths)}):')
-		command = ['python3', 'S2F.py', now, file, str(int(circle_rate*len(now)))]
+		command = ['python', 'S2F.py', now, file, str(int(circle_rate*len(now)))]
 		datas.append(cmd_p(command))
 	print("done\n")
 		
