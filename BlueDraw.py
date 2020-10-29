@@ -22,8 +22,8 @@ from Functions import *
 這裡的係數可以自己按照需求改動
 '''
 
-circle_rate = 3				#圓圈數量係數 path資料長度乘上此係數即是使用的圓圈數量
-point_rate = 0.22			#繪畫點數量係數 路徑長度乘以此係數即為使用的繪畫點數量
+circle_rate = 1			#圓圈數量係數 path資料長度乘上此係數即是使用的圓圈數量
+point_rate = 1.5			#繪畫點數量係數 路徑長度乘以此係數即為使用的繪畫點數量
 
 def get_arg(args):
 	yield 'note','-p'
@@ -35,8 +35,8 @@ if __name__ == '__main__':
 	#freeze_support()
 	
 	loader = get_arg(sys.argv)				#從命令列獲取檔案名稱
-	for i in range(len(sys.argv)):
-		file, mode = loader.__next__()
+	for _ in range(len(sys.argv)):
+		file, mode = next(loader)
 	
 	paths, w, h = read(f'./SVG/{file}.svg')	#從SVG讀取path
 	
@@ -54,27 +54,39 @@ if __name__ == '__main__':
 	for i in range(len(paths)):
 		now = paths[i]
 		print(f'Part({i}/{len(paths)}):')
+<<<<<<< Updated upstream
 		command = ['python', 'S2F.py', now, file, str(int(circle_rate*len(now)))]
+=======
+
+		if sys.platform!='win32':
+			command = ['python3', 'S2F.py', now, file, str(int(circle_rate*len(now)))]
+		else:
+			command = ['python', 'S2F.py', now, file, str(int(circle_rate*len(now)))]
+		
+>>>>>>> Stashed changes
 		datas.append(cmd_p(command))
+	
 	print("done\n")
 		
 	#input("按下Enter來開始")
 	all = []
-	for data in datas:
-		points = max(int(data[1]*point_rate),50)	#繪畫點數量
-		print('繪圖路徑點數:{}\n繪圖使用圓圈數:{}'.format(points,len(data[0])))
-		
-		try:
-			if mode=='-p':
-				path, iterupt = drawer.draw_pg(data[0],points,all)
-			elif mode=='-t':
-				path, iterupt = drawer.draw_tl(data,points,file)
-		except KeyboardInterrupt:
-			iterupt = True
-		
-		if not iterupt:
-			print("繪圖已中斷")
-			sys.exit()
-		all.append(path)
+	for i in range(100):
+		for data in datas:
+			points = max(int(data[1]*point_rate),50)	#繪畫點數量
+			try:
+				if mode=='-p':
+					path, iterupt = drawer.draw_pg(data[0],points,all)
+				elif mode=='-t':
+					path, iterupt = drawer.draw_tl(data,points,file)
+			except KeyboardInterrupt:
+				iterupt = True
+			
+			if not i:
+  			all.append(path)
+				print('繪圖路徑點數:{}\n繪圖使用圓圈數:{}'.format(points,len(data[0])))
+			
+			if not iterupt:
+				print("繪圖已中斷")
+				sys.exit()
 		
 	input("繪圖已完成 按下Enter來結束")
